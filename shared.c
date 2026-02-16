@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <errno.h>
+#include "compat.h"
 
 #ifdef __linux__
 #include <sys/mman.h>
@@ -17,39 +18,37 @@
 #define WIN32_MEAN_AND_LEAN 1
 #include <windows.h>
 #include <psapi.h>
-#define putenv _putenv
 extern int WINAPI K32GetModuleInformation(HANDLE process, HMODULE module, LPMODULEINFO modinfo, DWORD sz);
 #endif
 
-char* _get_string(const char* setting) {
+
+char* _get_string(const char* env_name) {
 	const char* header = "AURORA_";
 
-	// get the length of the header + env name, and allocate
-	size_t sz = ((strlen(header) + strlen(setting)) + (sizeof(char)*2));
-	char* newSetting = malloc(sz);
-	memset(newSetting, 0x00, sz);
+	// get the length of the header + env_value name, and allocate
+	size_t sz = ((strlen(header) + strlen(env_name)) + (sizeof(char)*2));
+	char* new_env_name = malloc(sz);
+	memset(new_env_name, 0x00, sz);
 	
 	// append "AURORA_" to the environmenet variable ..
-	snprintf(newSetting, sz - sizeof(char), "%s%s", header, setting);
+	strcat(new_env_name, header);
+	strcat(new_env_name, env_name);
+	char* env_value = getenv(new_env_name);
+	if (env_value == NULL) return NULL;
 
-	char* env = getenv(newSetting);
+	// copy the env_value value the env_value name ..
+	char* new_env_value = strdup(env_value);
 	
-	// remove environment variable 
-	snprintf(newSetting, sz - sizeof(char), "%s%s=", header, setting);
-	putenv(newSetting);
-
-	// free the env name ..
-	free(newSetting);
+	// unset the environment variable -- so hytale cant see it :3
+	unsetenv(new_env_name);
+	free(new_env_name);
 	
-	if (env == NULL) return NULL;
-	if (strcmp(env, "") == 0) return NULL;
-	return env;
+	if (strcmp(new_env_value, "") == 0) return NULL;
+	return new_env_value;
 }
 
-
-#define get_bool(setting) do { char* val = _get_string(#setting); if(val != NULL) { CFG.setting = (strcmp(val, "true") == 0); } } while(0)
-#define get_string(setting) do { char* val = _get_string(#setting); if(val != NULL) { strncpy(CFG.setting, val, sizeof(CFG.setting) -1); } } while(0)
-
+#define get_bool(env_name) do { char* val = _get_string(#env_name); if(val != NULL) { CFG.env_name = (strcmp(val, "true") == 0); free(val); } } while(0)
+#define get_string(env_name) do { char* val = _get_string(#env_name); if(val != NULL) { strncpy(CFG.env_name, val, sizeof(CFG.env_name) -1); free(val); } } while(0)
 
 int change_prot(uintptr_t addr, int newProt) {
 #ifdef __linux__ 
@@ -393,12 +392,11 @@ int get_rw_perms() {
 #ifdef _WIN32
 
 void create_console() {
-	FILE* fd;
+	FILE* new_fd;
 	AllocConsole();
-
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "r", stderr);
-	freopen("CONOUT$", "r", stdout);
+	freopen_s(&new_fd, "CONIN$", "r", stdin);
+	freopen_s(&new_fd, "CONOUT$", "w", stderr);
+	freopen_s(&new_fd, "CONOUT$", "w", stdout);
 
 	printf("Created new console window\n");
 }
@@ -464,6 +462,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
+#ifdef _DEBUG
+		create_console();
+#endif
 		parse_config();
 		CreateProcessW_original = hook_export_func("KERNEL32.dll", "CreateProcessW", CreateProcessW_hook);
 		entry();

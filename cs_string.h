@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "shared.h"
+#include "compat.h"
 
 typedef struct PACK(csString {
     uint32_t stringSz;

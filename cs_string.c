@@ -1,4 +1,5 @@
 #include "cs_string.h"
+#include "compat.h"
 #include <stdlib.h>
 
 size_t wchar_strlen(const wchar_t* str) {

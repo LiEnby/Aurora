@@ -12,12 +12,6 @@ typedef struct modinfo {
 } modinfo;
 
 
-#ifdef __GNUC__
-#define PACK( declaration ) declaration __attribute__((__packed__))
-#elif _MSC_VER
-#define PACK( declaration ) __pragma(pack(push, 1) ) declaration __pragma(pack(pop))
-#endif
-
 int get_prot(void* addr);
 int change_prot(uintptr_t addr, int newProt);
 modinfo get_base();

@@ -8,8 +8,8 @@
 configuration CFG = {
     .ENABLE_CONSOLE = 0, // on windows, this will pop open a command prompt with the game, which can be useful.
     .ENABLE_INSECURE_SERVERS = 1, // wether to enable joining servers with auth-mode=insecure or auth-mode=offline,
-    .ENABLE_AUTH_SWAP = 0, // wether to redirect the auth server to somewhere else
     .ENABLE_SINGLEPLAYER_AS_INSECURE = 1, // force singleplayer games to start in --auth-mode=insecure instead of --auth-mode=authenticated.
+    .ENABLE_AUTH_SWAP = 0, // wether to redirect the auth server to somewhere else
 
     .HYTALE_COM = "hytale.com", // what to replace the string "hytale.com" with .
     .SESSIONS = "https://sessions.", // what to replace the string "https://sessions." with .
@@ -21,12 +21,6 @@ configuration CFG = {
 
 static int num_swaps = 0;
 static int num_codes = 0;
-
-#ifdef _DEBUG
-#define print(...) printf(__VA_ARGS__)
-#else
-#define print(...) /**/
-#endif
 
 // these are callbacks that will happen whenever a new process is started,
 // 
@@ -58,6 +52,7 @@ int modify_argument(const char* program, char* arg) {
         // we don't want to preload ourselves into java, 
         // doing so will very likely crash the JRE 
         if (strstr(arg, "LD_PRELOAD") != 0) {
+            print("Clearing LD_PRELOAD\n");
             return 0; // discard env
         }
 
@@ -66,28 +61,32 @@ int modify_argument(const char* program, char* arg) {
         // instead of auth-mode=authenticated;
 
         if (CFG.ENABLE_SINGLEPLAYER_AS_INSECURE) {
-            
             // FIX: as of pre-release 10, the --session-token and --identity-token 
             // arguments passed to the server are checked for validity, so we must remove them here
             if (strstr(arg, "--session-token=") != 0) { // versions prior to pre-release 21 will pass
+                print("Clearing session token\n");
                 return 0; 
             }
             if (strstr(arg, "--identity-token=") != 0) {
+                print("Clearing identity token\n");
                 return 0; // discard argument
             }
 
             // FIX: as of pre-release 21, session token and identity token are passed by environment variables
             // "HYTALE_SERVER_IDENTITY_TOKEN" and "HYTALE_SERVER_SESSION_TOKEN" so we remove those too
             if (strstr(arg, "HYTALE_SERVER_IDENTITY_TOKEN") != 0) {
+                print("Clearing identity token\n");
                 return 0; // discard env
             }
             if (strstr(arg, "HYTALE_SERVER_SESSION_TOKEN") != 0) {
+                print("Clearing session token\n");
                 return 0; // discard env
             }
 
             // swap when the client tries to spawn a java process w argument --auth-mode=authenticated, 
             // change it to --auth-mode=insecure.
             if (strstr(arg, "--auth-mode=authenticated") != 0) {
+                print("Setting auth-mode to insecure\n");
                 strcpy(arg, "--auth-mode=insecure"); // change to auth-mode=insecure ..
                 return 1; // keep argument
             }
@@ -134,11 +133,11 @@ void enable_dev_servers(uint8_t* mem) {
     // (or if theres ever a 0F 84 in any of the addresses .. hm but thats a chance of 2^16 :D)
 
     if (change_prot((uintptr_t)mem, get_rw_perms()) == 0) {
-        print("nopping debug check at %p\n", mem);
+        print("nopping is_debug check at %p\n", mem);
         for (; (mem[0] != 0x0F && mem[1] != 0x84); mem++); // locate the jz instruction ...
         memset(mem, 0x90, 0x6); // fill with NOP
 
-        print("nopping debug check at %p\n", mem);
+        print("nopping is_debug check at %p\n", mem);
         for (; (mem[0] != 0x0F && mem[1] != 0x84); mem++); // locate the next jz instruction ...
         memset(mem, 0x90, 0x6); // fill with NOP
     }
