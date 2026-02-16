@@ -1,0 +1,5 @@
+Build/*
+*.user
+*.users
+*.vs/*
+*.o
