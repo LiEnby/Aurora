@@ -20,10 +20,9 @@ This can be configured via Environment Variables before starting the game;
 
 
 ```
-
 types:
  -> boolean, must be the string "true" to enable, every other string is disabled.
- -> string, can be any string value.
+ -> string, can be any ANSI string value.
 
 AURORA_ENABLE_CONSOLE
  -> boolean, on windows, this will pop open a command prompt with the game, which can be useful for debugging; on linux this wont do anything.
@@ -44,7 +43,6 @@ AURORA_TOOLS
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://tools." with.
 AURORA_TELEMETRY
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://telemetry." with.
-
 ```
 
 IMPORTANT: Due to limitations on how C# strings work, and also with the approach this is using -> any string you replace cannot be longer than the original string;
