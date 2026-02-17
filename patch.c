@@ -11,13 +11,13 @@ configuration CFG = {
     .ENABLE_SINGLEPLAYER_AS_INSECURE = 1, // force singleplayer games to start in --auth-mode=insecure instead of --auth-mode=authenticated.
     .ENABLE_AUTH_SWAP = 0, // wether to redirect the auth server to somewhere else
     
-    .HYTALE_COM = "hytale.com", // what to replace the string "hytale.com" with .
-    .SESSIONS = "https://sessions.", // what to replace the string "https://sessions." with .
-    .ACCOUNT_DATA = "https://account-data.", // what to replace the string "https://account-data." with .
-    .TOOLS = "https://tools.", // what to replace the string "https://tools." with .
-    .TELEMETRY = "https://telemetry.", // what to replace the string "https://telemetry." with .
+    .HYTALE_COM = "hytale.com", // what to replace the string "hytale.com" with
+    .SESSIONS = "https://sessions.", // what to replace the string "https://sessions." with
+    .ACCOUNT_DATA = "https://account-data.", // what to replace the string "https://account-data." with
+    .TOOLS = "https://tools.", // what to replace the string "https://tools." with
+    .TELEMETRY = "https://telemetry.", // what to replace the string "https://telemetry." with
 
-    .SENTRY_URL = "", // disable sentry
+    .SENTRY_URL = "https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2", // replace the sentry endpoint to something else.
 };
 
 
@@ -183,8 +183,8 @@ void entry() {
         {.old = make_csstr(L"https://sessions."),                                             .new = make_csstr_ansi(CFG.SESSIONS)},
         {.old = make_csstr(L"https://tools."),                                                .new = make_csstr_ansi(CFG.TOOLS)},
         {.old = make_csstr(L"https://telemetry."),                                            .new = make_csstr_ansi(CFG.TELEMETRY)},
-        {.old = make_csstr(L"hytale.com"),                                                    .new = make_csstr_ansi(CFG.HYTALE_COM)},
         {.old = make_csstr(L"https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2"),  .new = make_csstr_ansi(CFG.SENTRY_URL)},
+        {.old = make_csstr(L"hytale.com"),                                                    .new = make_csstr_ansi(CFG.HYTALE_COM)}, 
     };
 
     int total_swaps = (sizeof(swaps) / sizeof(swapEntry));
