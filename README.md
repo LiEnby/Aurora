@@ -91,7 +91,7 @@ AURORA_HYTALE_COM=.1:59313
 # Usage: 
 
 ## Windows
-On windows, rename the DLL to "Secur32.dll" and place it in the same folder as the game client;
+On windows, rename the DLL to ``Secur32.dll`` and place it in the same folder as the game client;
 
 ## Linux
 On linux set the environment variable ``LD_PRELOAD`` to the path to the shared-object file 
