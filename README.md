@@ -53,21 +53,22 @@ this is why for example the string "sanasol.ws" is exactly 10 characters, same a
 
 
 # Examples 
-sansol auth server:
+== sansol auth server ==
 
 ```
 AURORA_ENABLE_AUTH_SWAP=true 
 AURORA_HYTALE_COM=sanasol.ws
 ```
 
-join cracked servers with offical game:
+== cracked servers on offical game ==
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_SINGLEPLAYER_AS_INSECURE=false
 AURORA_ENABLE_AUTH_SWAP=false
 ```
 
-localhost auth server
+
+== localhost auth server ==
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_AUTH_SWAP=true 
@@ -80,12 +81,6 @@ AURORA_HYTALE_COM=.1:59313
 AURORA_SENTRY_URL=http://key@127.0.0.1/2
 ```
 
-disable telemetry
-```
-AURORA_ENABLE_AUTH_SWAP=true
-AURORA_TELEMETRY=http://a/a?=
-AURORA_SENTRY_URL=http://a@a/2
-```
 
 -> this works because despite `http://127.0.0.1:59313` being too long (>10 chars) normally.
 
@@ -96,6 +91,23 @@ AURORA_SENTRY_URL=http://a@a/2
  .. .. using this method you can get a maximum length of (24) characters, 
   
   as thats the size of the smallest subdomain `https://tools.` (its used for bug reports iirc;)
+
+
+== disable telemetry ==
+```
+AURORA_ENABLE_AUTH_SWAP=true
+AURORA_TELEMETRY=http://a/a?=
+AURORA_SENTRY_URL=http://a@a/2
+```
+
+-> this works because it this sets the telemetry 'subdomain', to `http://a/a?=`, 
+  .. the domain 'hytale.com' will be appended to this as so the resulting url would be: `http://a/a?=hytale.com//telemetry/client` 
+  
+  .. the domain for this url is now `a` which isn't going to go anywhere, and `hytale.com/telemetry/client` is now the query part, 
+  
+-> sentry (a telemetry suite) expects a public key, as username part, and then a version as path;
+  
+  .. `http://a@a/2` has a username of `a`, on the domain `a` with version 2, which, is a valid URL but not going to go anywhere
 
 
 # Usage: 
