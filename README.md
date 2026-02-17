@@ -101,6 +101,7 @@ AURORA_SENTRY_URL=http://a@a/2
 ```
 
 -> this works because it this sets the telemetry 'subdomain', to `http://a/a?=`, 
+
   .. the domain 'hytale.com' will be appended to this as so the resulting url would be: `http://a/a?=hytale.com//telemetry/client` 
   
   .. the domain for this url is now `a` which isn't going to go anywhere, and `hytale.com/telemetry/client` is now the query part, 
