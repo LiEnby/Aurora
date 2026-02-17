@@ -39,8 +39,10 @@ char* _get_string(const char* env_name) {
 	// copy the env_value value the env_value name ..
 	char* new_env_value = strdup(env_value);
 	
-	// unset the environment variable -- so hytale cant see it :3
-	unsetenv(new_env_name);
+	
+	// unsetenv(new_env_name); // oops: breaks the editor, not needed for now anyway; 
+							   // uncomment this line if hytale ever check for "AURORA_" variables .. 
+							   // and write logic to re-define these variables when new processes start.
 	free(new_env_name);
 	
 	if (strcmp(new_env_value, "") == 0) return NULL;
@@ -112,6 +114,8 @@ void parse_config() {
 	get_string(SESSIONS);
 	get_string(TELEMETRY);
 	get_string(TOOLS);
+
+	get_string(SENTRY_URL);
 }
 
 #ifdef __linux__ 
