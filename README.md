@@ -47,7 +47,43 @@ AURORA_TELEMETRY
 
 IMPORTANT: Due to limitations on how C# strings work, and also with the approach this is using -> any string you replace cannot be longer than the original string;
 i.e; AURORA_HYTALE_COM cannot be longer than 10 characters; any string *longer will be truncated to the maximum size* size.
-this is why for example the string "sanasol.ws" is exactly 10 characters, same as "hytale.com".
+this is why for example the string "sanasol.ws" is exactly 10 characters, same as "hytale.com";
+
+
+# Examples 
+sansol auth server:
+
+```
+AURORA_ENABLE_AUTH_SWAP=true 
+AURORA_HYTALE_COM=sanasol.ws
+```
+
+join cracked servers with offical game:
+```
+AURORA_ENABLE_INSECURE_SERVERS=true 
+AURORA_ENABLE_SINGLEPLAYER_AS_INSECURE=true
+AURORA_ENABLE_AUTH_SWAP=false
+```
+
+localhost auth server
+```
+AURORA_ENABLE_INSECURE_SERVERS=true 
+AURORA_ENABLE_AUTH_SWAP=true 
+AURORA_ENABLE_SINGLEPLAYER_AS_INSECURE=true
+AURORA_SESSIONS=http://127.0.0
+AURORA_ACCOUNT_DATA=http://127.0.0
+AURORA_TOOLS=http://127.0.0
+AURORA_TELEMETRY=http://127.0.0
+AURORA_HYTALE_COM=.1:59313 
+```
+
+-> this works because despite `http://127.0.0.1:59313` being too long normally.
+ .. because the subdomain is stored seperately (i.e `https://sessions.`) and appended to the `hytale.com` domain; 
+ .. then will result (after processing) as the URL .. `http://127.0.0.1:59313`
+ 
+ .. .. using this method you can get a maximum length of (24) characters, 
+  as thats the size of the smallest subdomain `https://tools.` 
+  (as used in bug reports.)
 
 
 # Usage: 
