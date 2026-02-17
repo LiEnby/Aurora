@@ -53,14 +53,19 @@ this is why for example the string "sanasol.ws" is exactly 10 characters, same a
 
 
 # Examples 
-== sansol auth server ==
+==
+sansol auth server
+==
 
 ```
 AURORA_ENABLE_AUTH_SWAP=true 
 AURORA_HYTALE_COM=sanasol.ws
 ```
 
-== cracked servers on offical game ==
+==
+cracked servers on offical game
+==
+
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_SINGLEPLAYER_AS_INSECURE=false
@@ -68,7 +73,10 @@ AURORA_ENABLE_AUTH_SWAP=false
 ```
 
 
-== localhost auth server ==
+==
+localhost auth server 
+==
+
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_AUTH_SWAP=true 
@@ -104,11 +112,11 @@ AURORA_SENTRY_URL=http://a@a/2
 
   .. the domain 'hytale.com' will be appended to this as so the resulting url would be: `http://a/a?=hytale.com//telemetry/client` 
   
-  .. the domain for this url is now `a` which isn't going to go anywhere, and `hytale.com/telemetry/client` is now the query part, 
+  .. the domain for this url is now `a` which is not going to resolve to any host, and `hytale.com/telemetry/client` is now the query part, 
   
 -> sentry (a telemetry suite) expects a public key, as username part, and then a version as path;
   
-  .. `http://a@a/2` has a username of `a`, on the domain `a` with version 2, which, is a valid URL but not going to go anywhere
+  .. `http://a@a/2` has a username of `a`, on the domain `a` with version 2, which, is a valid URL but not going to resolve to any host.
 
 
 # Usage: 
