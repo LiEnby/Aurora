@@ -43,6 +43,8 @@ AURORA_TOOLS
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://tools." with.
 AURORA_TELEMETRY
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://telemetry." with.
+AURORA_SENTRY_URL
+ -> string, if "ENABLE_AUTH_SWAP" is enabled, then this what it will replace the string "https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2" with.
 ```
 
 IMPORTANT: Due to limitations on how C# strings work, and also with the approach this is using -> any string you replace cannot be longer than the original string;
@@ -75,6 +77,14 @@ AURORA_ACCOUNT_DATA=http://127.0.0
 AURORA_TOOLS=http://127.0.0
 AURORA_TELEMETRY=http://127.0.0
 AURORA_HYTALE_COM=.1:59313 
+AURORA_SENTRY_URL=http://key@127.0.0.1/2
+```
+
+disable telemetry
+```
+AURORA_ENABLE_AUTH_SWAP=true
+AURORA_TELEMETRY=http://a/a?=
+AURORA_SENTRY_URL=http://a@a/2
 ```
 
 -> this works because despite `http://127.0.0.1:59313` being too long (>10 chars) normally.
