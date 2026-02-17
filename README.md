@@ -77,13 +77,15 @@ AURORA_TELEMETRY=http://127.0.0
 AURORA_HYTALE_COM=.1:59313 
 ```
 
--> this works because despite `http://127.0.0.1:59313` being too long normally.
+-> this works because despite `http://127.0.0.1:59313` being too long (>10 chars) normally.
+
  .. because the subdomain is stored seperately (i.e `https://sessions.`) and appended to the `hytale.com` domain; 
+ 
  .. then will result (after processing) as the URL .. `http://127.0.0.1:59313`
  
  .. .. using this method you can get a maximum length of (24) characters, 
-  as thats the size of the smallest subdomain `https://tools.` 
-  (as used in bug reports.)
+  
+  as thats the size of the smallest subdomain `https://tools.` (its used for bug reports iirc;)
 
 
 # Usage: 
