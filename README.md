@@ -53,18 +53,16 @@ this is why for example the string "sanasol.ws" is exactly 10 characters, same a
 
 
 # Examples 
-====================
-sansol auth server  
-====================
+= sanasol auth server =
+
 
 ```
 AURORA_ENABLE_AUTH_SWAP=true 
 AURORA_HYTALE_COM=sanasol.ws
 ```
 
-=================================
-offline servers on offical game  
-=================================
+
+= offline servers on offical game =
 
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
@@ -73,10 +71,7 @@ AURORA_ENABLE_AUTH_SWAP=false
 ```
 
 
-=======================
-localhost auth server  
-=======================
-
+= localhost auth server =
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_AUTH_SWAP=true 
@@ -101,9 +96,7 @@ AURORA_SENTRY_URL=http://key@127.0.0.1/2
   as thats the size of the smallest subdomain `https://tools.` (its used for bug reports iirc;)
 
 
-===================
-disable telemetry 
-===================
+= disable telemetry =
 ```
 AURORA_ENABLE_AUTH_SWAP=true
 AURORA_TELEMETRY=http://a/a?=
