@@ -43,6 +43,8 @@ AURORA_TOOLS
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://tools." with.
 AURORA_TELEMETRY
  -> string, if "ENABLE_AUTH_SWAP" is enabled, then this is what it will replace the string "https://telemetry." with.
+AURORA_SENTRY_URL
+ -> string, if "ENABLE_AUTH_SWAP" is enabled, then this what it will replace the string "https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2" with.
 ```
 
 IMPORTANT: Due to limitations on how C# strings work, and also with the approach this is using -> any string you replace cannot be longer than the original string;
@@ -51,21 +53,25 @@ this is why for example the string "sanasol.ws" is exactly 10 characters, same a
 
 
 # Examples 
-sansol auth server:
+= sanasol auth server =
+
 
 ```
 AURORA_ENABLE_AUTH_SWAP=true 
 AURORA_HYTALE_COM=sanasol.ws
 ```
 
-join cracked servers with offical game:
+
+= offline servers on offical game =
+
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_SINGLEPLAYER_AS_INSECURE=false
 AURORA_ENABLE_AUTH_SWAP=false
 ```
 
-localhost auth server
+
+= localhost auth server =
 ```
 AURORA_ENABLE_INSECURE_SERVERS=true 
 AURORA_ENABLE_AUTH_SWAP=true 
@@ -75,7 +81,9 @@ AURORA_ACCOUNT_DATA=http://127.0.0
 AURORA_TOOLS=http://127.0.0
 AURORA_TELEMETRY=http://127.0.0
 AURORA_HYTALE_COM=.1:59313 
+AURORA_SENTRY_URL=http://key@127.0.0.1/2
 ```
+
 
 -> this works because despite `http://127.0.0.1:59313` being too long (>10 chars) normally.
 
@@ -86,6 +94,24 @@ AURORA_HYTALE_COM=.1:59313
  .. .. using this method you can get a maximum length of (24) characters, 
   
   as thats the size of the smallest subdomain `https://tools.` (its used for bug reports iirc;)
+
+
+= disable telemetry =
+```
+AURORA_ENABLE_AUTH_SWAP=true
+AURORA_TELEMETRY=http://a/a?=
+AURORA_SENTRY_URL=http://a@a/2
+```
+
+-> this works because it this sets the telemetry 'subdomain', to `http://a/a?=`, 
+
+  .. the domain 'hytale.com' will be appended to this as so the resulting url would be: `http://a/a?=hytale.com//telemetry/client` 
+  
+  .. the domain for this url is now `a` which is not going to resolve to any host, and `hytale.com/telemetry/client` is now the query part, 
+  
+-> sentry (a telemetry suite) expects a public key, as username part, and then a version as path;
+  
+  .. `http://a@a/2` has a username of `a`, on the domain `a` with version 2, which, is a valid URL but not going to resolve to any host.
 
 
 # Usage: 
