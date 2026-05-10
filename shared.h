@@ -18,15 +18,33 @@ modinfo get_base();
 int get_rw_perms();
 void create_console();
 
+// old
+// 
+// 
 // linux:  48 8D ?? ?? E8 ?? ?? ?? 00 80 ?? ?? 00 0F 84
 // windows: 48 8D ?? ?? ?? E8 ?? ?? ?? ?? 80 ?? ?? ?? 00 0F 84
+// 
+// new
+//
+// linux:   0F 85 ?? ?? E8 ?? ?? ?? 00 80 ?? ?? 00 0F 84 (?)
+// windows: 0F 85 ?? ?? ?? ?? E8 ?? ?? ?? 00 80 ?? ?? 00 0F 84
+
 #define PATTERN_DEVSERVER_LINUX (mem[0] == 0x48 && mem[1] == 0x8D && mem[4] == 0xE8 && mem[8] == 0x00 && mem[9] == 0x80 && mem[12] == 0x00 && mem[13] == 0x0F && mem[14] == 0x84)
 #define PATTERN_DEVSERVER_WINDOWS (mem[0] == 0x48 && mem[1] == 0x8D && mem[5] == 0xE8 && mem[10] == 0x80 && mem[14] == 0x00 && mem[15] == 0x0F && mem[16] == 0x84)
+
+
+#define PATTERN_DEVSERVER_WINDOWS_NEW (mem[0] == 0x0F && mem[1] == 0x85 && mem[6] == 0xE8 && mem[10] == 0x00 && mem[11] == 0x80 && mem[14] == 0x00 && mem[15] == 0x0F && mem[16] == 0x84)
 
 #ifdef __linux__
 #define PATTERN_DEVSERVER_CURRENTPLATFORM PATTERN_DEVSERVER_LINUX
 #elif _WIN32
 #define PATTERN_DEVSERVER_CURRENTPLATFORM PATTERN_DEVSERVER_WINDOWS
+#endif
+
+#ifdef __linux__
+#define PATTERN_DEVSERVER_CURRENTPLATFORM_NEW PATTERN_DEVSERVER_LINUX_NEW
+#elif _WIN32
+#define PATTERN_DEVSERVER_CURRENTPLATFORM_NEW PATTERN_DEVSERVER_WINDOWS_NEW
 #endif
 
 #endif

@@ -149,7 +149,7 @@ void enable_dev_servers(uint8_t* mem) {
 }
 
 void try_enable_dev_servers(uint8_t* mem) {
-    if (PATTERN_DEVSERVER_CURRENTPLATFORM) {
+    if (PATTERN_DEVSERVER_CURRENTPLATFORM || PATTERN_DEVSERVER_CURRENTPLATFORM_NEW) {
         enable_dev_servers(mem);
         num_codes++;
     }
