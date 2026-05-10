@@ -23,6 +23,8 @@ extern int WINAPI K32GetModuleInformation(HANDLE process, HMODULE module, LPMODU
 
 
 char* _get_string(const char* env_name) {
+	TRACE();
+
 	const char* header = "AURORA_";
 
 	// get the length of the header + env_value name, and allocate
@@ -53,9 +55,11 @@ char* _get_string(const char* env_name) {
 #define get_string(env_name) do { char* val = _get_string(#env_name); if(val != NULL) { strncpy(CFG.env_name, val, sizeof(CFG.env_name) -1); free(val); } } while(0)
 
 int change_prot(uintptr_t addr, int newProt) {
+	TRACE();
+
 #ifdef __linux__ 
 	uintptr_t align = (addr - (addr % getpagesize()));
-	return mprotect((void*)align, getpagesize(), newProt);
+	return mprotect((void*)align, getpagesize() * 10, newProt);
 #elif _WIN32
 	SYSTEM_INFO sysinf = { 0 };
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
@@ -66,6 +70,8 @@ int change_prot(uintptr_t addr, int newProt) {
 }
 
 int get_prot(void* addr) {
+	TRACE();
+
 #ifdef __linux__
 	char line[0x200];
 
@@ -95,6 +101,7 @@ int get_prot(void* addr) {
 	}
 
 	fclose(fd);
+	print("get_prot: %x\n", prot);
 	return prot;
 #elif _WIN32
 	MEMORY_BASIC_INFORMATION mbi = { 0 };
@@ -104,6 +111,8 @@ int get_prot(void* addr) {
 }
 
 void parse_config() {
+	TRACE();
+
 	get_bool(ENABLE_CONSOLE);
 	get_bool(ENABLE_AUTH_SWAP);
 	get_bool(ENABLE_INSECURE_SERVERS);
@@ -121,8 +130,8 @@ void parse_config() {
 #ifdef __linux__ 
 int execvpe(const char* filename, char* const argv[], char* const wenvp[]);
 int execve(const char* filename, char* const argv[], char* const wenvp[]) {
+	TRACE();
 
-	if (argv == NULL) return -1;
 	if (wenvp == NULL) return -1;
 
 	const char* program = filename;
@@ -195,7 +204,8 @@ BOOL WINAPI CreateProcessW_hook(
 	LPSTARTUPINFOW lpStartupInfo,
 	LPPROCESS_INFORMATION lpProcessInformation
 ) {
-	
+	TRACE();
+
 	// 
 	// remove session token from command line arguments.
 	//
@@ -339,6 +349,8 @@ BOOL WINAPI CreateProcessW_hook(
 
 
 modinfo get_base() {
+	TRACE();
+
 #ifdef __linux__
 	FILE* fd = fopen("/proc/self/maps", "rb");
 	assert(fd != NULL);
@@ -386,6 +398,8 @@ modinfo get_base() {
 }
 
 int get_rw_perms() {
+	TRACE();
+
 #ifdef __linux__
 	return PROT_READ | PROT_WRITE;
 #elif _WIN32
@@ -408,6 +422,7 @@ void create_console() {
 #else
 
 void create_console() {
+	TRACE();
 	return;
 }
 
@@ -415,12 +430,14 @@ void create_console() {
 
 #ifdef __linux__
 __attribute__((constructor)) int run() {
+	TRACE();
 	parse_config();
 	entry();
 	return 0;
 }
 #elif _WIN32
 void* hook_export_func(const char* targetModuleName, const char* targetFunctionName, void* newPtr) {
+	TRACE();
 	modinfo base = get_base();
 
 	IMAGE_DOS_HEADER* doshdr = (IMAGE_DOS_HEADER*)base.start;
@@ -461,8 +478,8 @@ void* hook_export_func(const char* targetModuleName, const char* targetFunctionN
 	return NULL;
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
-{
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+	TRACE();
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:

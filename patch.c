@@ -1,10 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "compat.h"
 #include "shared.h"
 #include "patch.h"
 #include "cs_string.h"
 #include <stdlib.h>
+
 configuration CFG = {
     .ENABLE_CONSOLE = 0, // on windows, this will pop open a command prompt with the game, which can be useful.
     .ENABLE_INSECURE_SERVERS = 1, // wether to enable joining servers with auth-mode=insecure or auth-mode=offline,
@@ -36,6 +38,8 @@ static int num_codes = 0;
 // return 1 if the program should have arguments or environment variables changed
 // if return 0 then it'll be skipped and the program will start as usual.
 int should_modify_argument(const char* program) {
+    TRACE();
+
     print("[should_modify_argument] %s\n", program);
     if (strstr(program, "java") != 0) return 1;
     else return 0;
@@ -48,6 +52,8 @@ int should_modify_argument(const char* program) {
 // return 0 means it'll discard this argument, 
 // return 1 means it'll keep it;
 int modify_argument(const char* program, char* arg) {
+    TRACE();
+
     print("[modify_argument] checking %s, %s\n", program, arg);
     if (strstr(program, "java") != 0) {
 
@@ -102,6 +108,8 @@ int modify_argument(const char* program, char* arg) {
 // handle string replacement
 
 void overwrite(csString* old, csString* new) {
+    TRACE();
+
     int prev = get_prot(old);
 
     if (change_prot((uintptr_t)old, get_rw_perms()) == 0) {
@@ -116,6 +124,8 @@ void overwrite(csString* old, csString* new) {
 
 
 void enable_dev_servers(uint8_t* mem) {
+    TRACE();
+
     int prev = get_prot(mem);
     // the is online mode and is singleplayer checks
     // are almost right next to eachother, it checks one, then checks the other
@@ -149,19 +159,27 @@ void enable_dev_servers(uint8_t* mem) {
 }
 
 void try_enable_dev_servers(uint8_t* mem) {
-    if (PATTERN_DEVSERVER_CURRENTPLATFORM || PATTERN_DEVSERVER_CURRENTPLATFORM_NEW) {
+    TRACE();
+
+    if (PATTERN_DEVSERVER_CURRENTPLATFORM_NEW || PATTERN_DEVSERVER_CURRENTPLATFORM) {
+        print("Found pattern at %p\n", mem);
+
         enable_dev_servers(mem);
         num_codes++;
     }
 }
 
 void try_swap(uint8_t* mem, csString* old, csString* new) {
+    TRACE();
     if (memcmp(mem, old, get_size_ptr(old)) == 0) {
+        print("Found target string at %p\n", mem);
+
         overwrite((csString*)mem, new);
         num_swaps++;
     }
 }
 void try_swaps(uint8_t* mem, swapEntry* swaps, int total_swaps) {
+    TRACE();
     for (int sw = 0; sw < total_swaps; sw++) 
         try_swap(mem, &swaps[sw].old, &swaps[sw].new);
 }
@@ -172,6 +190,8 @@ void try_swaps(uint8_t* mem, swapEntry* swaps, int total_swaps) {
 // and what features to enable, etc;
 
 void entry() {
+    TRACE();
+
     // if console is enabled then open the console .. 
     if (CFG.ENABLE_CONSOLE) {
         create_console();

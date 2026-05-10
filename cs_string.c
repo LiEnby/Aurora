@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 size_t wchar_strlen(const wchar_t* str) {
+    TRACE();
     size_t len = 0;
     do {
         len++;
@@ -11,6 +12,7 @@ size_t wchar_strlen(const wchar_t* str) {
 }
 
 wchar_t* make_wstring(const char* str) {
+    TRACE();
     size_t sz = strlen(str);
     
     sz = (sz + sizeof(char)) * 2;
@@ -25,6 +27,7 @@ wchar_t* make_wstring(const char* str) {
 }
 
 csString make_csstr(wchar_t* str) {
+    TRACE();
     csString cstr = { 0 };
     cstr.stringSz = (uint32_t)wchar_strlen(str);
     memcpy(cstr.stringData, str, wchar_strlen(str)*sizeof(wchar_t));
@@ -32,6 +35,7 @@ csString make_csstr(wchar_t* str) {
 }
 
 csString make_csstr_ansi(char* str) {
+    TRACE();
     csString cstr = { 0 };
 
     wchar_t* wstr = make_wstring(str);
