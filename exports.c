@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "compat.h"
 
 __declspec(dllexport) int GetUserNameExW(int nfmt, wchar_t* nameBuf, int* sz) {
 	TRACE();
