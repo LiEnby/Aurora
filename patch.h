@@ -21,6 +21,8 @@ typedef struct configuration {
 	char ACCOUNT_DATA[22]; // https://account-data.
 	char TOOLS[15]; // https://tools.
 	char TELEMETRY[19]; // https://telemetry.
+	char SOCIAL[16]; // https://social.
+	char WEBSOCKET[22]; // wss://socket-gateway.
 
 	// sentry cfg
 	char SENTRY_URL[61]; // https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2
