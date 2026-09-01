@@ -36,8 +36,8 @@ csString make_csstr(wchar_t* str) {
 
 csString make_csstr_ansi(char* str) {
     TRACE();
-    csString cstr = { 0 };
 
+    csString cstr = { 0 };
     wchar_t* wstr = make_wstring(str);
 
     cstr.stringSz = (uint32_t)wchar_strlen(wstr);

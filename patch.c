@@ -187,6 +187,12 @@ void try_swaps(uint8_t* mem, swapEntry* swaps, int total_swaps) {
 }
 
 
+static inline swapEntry new_swap(const char* ostr, const char* nstr) {
+    TRACE();
+    print("swap %s -> %s\n", ostr, nstr);
+    return (swapEntry) { .old = make_csstr_ansi(ostr), .new = make_csstr_ansi(nstr) };
+}
+
 // after initalizing everything, Aurora will call into this function;
 // here we actually define things like what strings to swap for other strings;
 // and what features to enable, etc;
@@ -201,14 +207,25 @@ void entry() {
 
     // define all the values to swap around ..
     swapEntry swaps[] = {
-        {.old = make_csstr(L"https://account-data."),                                         .new = make_csstr_ansi(CFG.ACCOUNT_DATA)},
-        {.old = make_csstr(L"https://sessions."),                                             .new = make_csstr_ansi(CFG.SESSIONS)},
-        {.old = make_csstr(L"https://tools."),                                                .new = make_csstr_ansi(CFG.TOOLS)},
-        {.old = make_csstr(L"https://social."),                                               .new = make_csstr_ansi(CFG.SOCIAL)},
-        {.old = make_csstr(L"wss://socket-gateway."),                                         .new = make_csstr_ansi(CFG.WEBSOCKET)},
-        {.old = make_csstr(L"https://telemetry."),                                            .new = make_csstr_ansi(CFG.TELEMETRY)},
-        {.old = make_csstr(L"https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2"),  .new = make_csstr_ansi(CFG.SENTRY_URL)},
-        {.old = make_csstr(L"hytale.com"),                                                    .new = make_csstr_ansi(CFG.HYTALE_COM)}, 
+        new_swap("https://account-data.", CFG.ACCOUNT_DATA),
+        new_swap("https://sessions.", CFG.SESSIONS),
+        new_swap("https://tools.", CFG.TOOLS),
+        new_swap("https://social.", CFG.SOCIAL),
+        new_swap("https://telemetry.", CFG.TELEMETRY),
+        new_swap("https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2", CFG.SENTRY_URL),
+        new_swap("wss://socket-gateway.", CFG.WEBSOCKET),
+        new_swap("hytale.com", CFG.HYTALE_COM)
+
+        /*
+        {.old = make_csstr_ansi("https://account-data."),                                         .new = make_csstr_ansi(CFG.ACCOUNT_DATA)},
+        {.old = make_csstr_ansi("https://sessions."),                                             .new = make_csstr_ansi(CFG.SESSIONS)},
+        {.old = make_csstr_ansi("https://tools."),                                                .new = make_csstr_ansi(CFG.TOOLS)},
+        {.old = make_csstr_ansi("https://social."),                                               .new = make_csstr_ansi(CFG.SOCIAL)},
+        {.old = make_csstr_ansi("https://telemetry."),                                            .new = make_csstr_ansi(CFG.TELEMETRY)},
+        {.old = make_csstr_ansi("https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2"),  .new = make_csstr_ansi(CFG.SENTRY_URL)},
+        {.old = make_csstr_ansi("wss://socket-gateway."),                                         .new = make_csstr_ansi(CFG.WEBSOCKET)},
+        {.old = make_csstr_ansi("hytale.com"),                                                    .new = make_csstr_ansi(CFG.HYTALE_COM)},
+        */
     };
 
     int total_swaps = (sizeof(swaps) / sizeof(swapEntry));
