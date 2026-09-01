@@ -122,6 +122,8 @@ void parse_config() {
 	get_string(ACCOUNT_DATA);
 	get_string(SESSIONS);
 	get_string(TELEMETRY);
+	get_string(SOCIAL);
+	get_string(WEBSOCKET);
 	get_string(TOOLS);
 
 	get_string(SENTRY_URL);
