@@ -93,9 +93,17 @@ int modify_argument(const char* program, char* arg) {
                 return 0; // discard env
             }
 
-            // swap when the client tries to spawn a java process w argument --auth-mode=authenticated, 
-            // change it to --auth-mode=insecure.
-            if (strstr(arg, "--auth-mode=authenticated") != 0) {
+            // FIX: Offline mode in later versions pins a key from session.hytale.com...
+            // however specifying *no* token still works ..
+            if (strstr(arg, "HYTALE_OFFLINE_TOKEN") != 0 || strstr(arg, "HYTALE_SERVER_OFFLINE_TOKEN") != 0) {
+                print("Clearing offline token\n");
+                return 0; // discard env
+            }
+
+            // swap when the client tries to spawn a java process w argument --auth-mode=authenticated, or --auth-mode=offline
+            // change it to --auth-mode=insecure ...
+
+            if (strstr(arg, "--auth-mode=authenticated") != 0 || strstr(arg, "--auth-mode=offline") != 0) {
                 print("Setting auth-mode to insecure\n");
                 strcpy(arg, "--auth-mode=insecure"); // change to auth-mode=insecure ..
                 return 1; // keep argument
@@ -187,11 +195,6 @@ void try_swaps(uint8_t* mem, swapEntry* swaps, int total_swaps) {
 }
 
 
-static inline swapEntry new_swap(const char* ostr, const char* nstr) {
-    TRACE();
-    print("swap %s -> %s\n", ostr, nstr);
-    return (swapEntry) { .old = make_csstr_ansi(ostr), .new = make_csstr_ansi(nstr) };
-}
 
 // after initalizing everything, Aurora will call into this function;
 // here we actually define things like what strings to swap for other strings;
@@ -207,16 +210,6 @@ void entry() {
 
     // define all the values to swap around ..
     swapEntry swaps[] = {
-        new_swap("https://account-data.", CFG.ACCOUNT_DATA),
-        new_swap("https://sessions.", CFG.SESSIONS),
-        new_swap("https://tools.", CFG.TOOLS),
-        new_swap("https://social.", CFG.SOCIAL),
-        new_swap("https://telemetry.", CFG.TELEMETRY),
-        new_swap("https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2", CFG.SENTRY_URL),
-        new_swap("wss://socket-gateway.", CFG.WEBSOCKET),
-        new_swap("hytale.com", CFG.HYTALE_COM)
-
-        /*
         {.old = make_csstr_ansi("https://account-data."),                                         .new = make_csstr_ansi(CFG.ACCOUNT_DATA)},
         {.old = make_csstr_ansi("https://sessions."),                                             .new = make_csstr_ansi(CFG.SESSIONS)},
         {.old = make_csstr_ansi("https://tools."),                                                .new = make_csstr_ansi(CFG.TOOLS)},
@@ -225,7 +218,6 @@ void entry() {
         {.old = make_csstr_ansi("https://ca900df42fcf57d4dd8401a86ddd7da2@sentry.hytale.com/2"),  .new = make_csstr_ansi(CFG.SENTRY_URL)},
         {.old = make_csstr_ansi("wss://socket-gateway."),                                         .new = make_csstr_ansi(CFG.WEBSOCKET)},
         {.old = make_csstr_ansi("hytale.com"),                                                    .new = make_csstr_ansi(CFG.HYTALE_COM)},
-        */
     };
 
     int total_swaps = (sizeof(swaps) / sizeof(swapEntry));
